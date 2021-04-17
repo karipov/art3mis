@@ -1,0 +1,8 @@
+{
+	"TIME_ERR": "{0} is not valid. Try reformatting in 'HH:MM' in 24 hour time.",
+	"LOCALE_ERR": "{0} is not a timezone. Try reformatting with 'Continent/City'.",
+	"ALARM_SET": "Alarm set for {0} ({1})!",
+
+	"HELP": "Hey! I'm Artemis, your LDR helper. Please see my functionality below:\n```!alarm <HH:MM> <timezone> - Set your sleeptime reminder alarm.\n!code - See the source code for the bot.```",
+	"CODE": "Soon!"
+}

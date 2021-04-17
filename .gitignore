@@ -1,6 +1,7 @@
 # Custom
 config.json
 config_testing.json
+*.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
