@@ -2,14 +2,19 @@ import json, pathlib
 from datetime import datetime, time, timedelta
 import asyncio
 import logging
+import argparse
 
 import pytz
 from discord.ext import commands, tasks
 from discord import FFmpegPCMAudio, Activity, ActivityType
 
 
+parser = argparse.ArgumentParser(description="LDR discord bot artemis")
+parser.add_argument("--config", dest="config", default="files/config_testing.json")
+args = parser.parse_args()
+
 PROJECT_FOLDER = pathlib.Path.cwd()
-CONFIG = json.load(open(PROJECT_FOLDER.joinpath("files/config_testing.json"), "r"))
+CONFIG = json.load(open(PROJECT_FOLDER.joinpath(args.config), "r"))
 REPLIES = json.load(open(PROJECT_FOLDER.joinpath("files/replies.json"), "r"))
 
 logger = logging.getLogger()
@@ -69,9 +74,10 @@ async def on_ready():
         type=ActivityType.listening, name="!help for commands and info!")
     )
 
+
 # BOT COMMANDS
 @bot.command()
-async def alarm(ctx, intime: str, locale: str):
+async def alarm(ctx, intime: str, locale: str = "Europe/Zurich"):
     try:
         params = dict()
         params["hours"], params["minutes"] = map(int, intime.split(":"))
@@ -85,7 +91,6 @@ async def alarm(ctx, intime: str, locale: str):
         return
     except KeyError:
         await ctx.send(REPLIES["LOCALE_ERR"].format(locale))
-        return
 
     task = job.get_task()
     if task and not task.done():
@@ -99,12 +104,12 @@ async def alarm(ctx, intime: str, locale: str):
 
 @bot.command()
 async def help(ctx):
-    logger.info("help by {ctx.author.name}") 
+    logger.info(f"help by {ctx.author.name}") 
     await ctx.send(REPLIES["HELP"])
 
 @bot.command()
 async def code(ctx):
-    logger.info("code by {ctx.author.name}") 
+    logger.info(f"code by {ctx.author.name}") 
     await ctx.send(REPLIES["CODE"])
 
 
