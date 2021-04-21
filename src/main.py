@@ -6,7 +6,7 @@ import argparse
 
 import pytz
 from discord.ext import commands, tasks
-from discord import FFmpegPCMAudio, Activity, ActivityType
+from discord import FFmpegPCMAudio, Activity, ActivityType, Spotify
 
 
 parser = argparse.ArgumentParser(description="LDR discord bot artemis")
@@ -71,8 +71,22 @@ async def job(params: dict):
 async def on_ready():
     logger.info("Bot online!")
     await bot.change_presence(activity=Activity(
-        type=ActivityType.listening, name="!help for commands and info!")
+        type=ActivityType.listening, name=REPLIES["STATUS"])
     )
+
+@bot.event
+async def on_member_update(before, after):
+    # listening to spotify activities
+    if not isinstance(after.activity, Spotify):
+        return
+
+    members = filter(lambda member: not member.bot, after.guild.members)
+    listening = all([isinstance(m.activity, Spotify) for m in members])
+    on_desktop = all([not m.is_on_mobile() for m in members])
+
+    if listening and on_desktop:
+        music_channel = await bot.get_chanel(CONFIG["MUSIC"])
+        await music_channel.send(REPLIES["SPOTIFY"].format(after.name))
 
 
 # BOT COMMANDS
